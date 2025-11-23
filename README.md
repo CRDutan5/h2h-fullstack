@@ -15,19 +15,28 @@ A Spring Boot backend application for managing sports teams, players, coaches, a
 - Type-safe position system (Goalkeeper, Defender, Midfielder, Forward)
 - Team assignment (one team per player)
 - Position tracking
+- Join and leave teams dynamically
 
 ### 👥 Team Management
 - Team creation and details
 - Captain assignment (must be a player)
-- Roster management with size limits
+- **Dynamic roster management** (add/remove players)
+- **Roster size validation** (enforces max roster limits)
 - Team statistics (wins, draws, losses)
 - Custom team colors and branding
+- **Captain protection** (cannot remove captain from team)
 
 ### 🎯 Coach & Referee Support
 - Coach and Referee role registration
 - Certification level tracking
 - Years of experience tracking
 - Team assignment for coaches
+
+### 🎲 Mock Data
+- Pre-loaded test data for quick development
+- 2 complete teams with rosters
+- 10 users across all roles
+- All passwords: `password123`
 
 ## Technology Stack
 
@@ -108,6 +117,8 @@ Role-specific data for coaches.
 | team_id | BIGINT | Foreign key to teams table (nullable) |
 | certification_level | VARCHAR(50) | Coaching certification level |
 | years_experience | INT | Years of experience (default 0) |
+
+---
 
 ## API Endpoints
 
@@ -283,8 +294,8 @@ Retrieves team details along with the full roster of players.
     "logoUrl": "https://example.com/logo.png",
     "homeColor": "Blue",
     "awayColor": "White",
-    "wins": 0,
-    "draws": 0,
+    "wins": 3,
+    "draws": 1,
     "losses": 0
   },
   "players": [
@@ -293,17 +304,154 @@ Retrieves team details along with the full roster of players.
       "userId": 1,
       "position": "FORWARD",
       "firstName": "John",
-      "lastName": "Doe"
+      "lastName": "Striker"
     },
     {
       "playerId": 2,
-      "userId": 4,
+      "userId": 2,
       "position": "GOALKEEPER",
-      "firstName": "Alice",
-      "lastName": "Williams"
+      "firstName": "Mike",
+      "lastName": "Keeper"
     }
   ]
 }
+```
+
+---
+
+#### Add Player to Team
+Adds a player to a team's roster. Validates roster size limits and ensures player is not already on another team.
+
+**Endpoint**: `POST /api/teams/{teamId}/players/{playerId}`
+
+**Path Parameters**:
+- `teamId`: ID of the team
+- `playerId`: ID of the player to add
+
+**Validations**:
+- ✅ Player must exist
+- ✅ Player cannot already be on another team
+- ✅ Team roster must not be full
+- ✅ Automatically updates roster count
+
+**Example Request**:
+```bash
+POST /api/teams/1/players/5
+```
+
+**Response** (200 OK):
+```json
+"Player added to team successfully"
+```
+
+**Error Responses**:
+- `400 Bad Request`: "Player is already on a team. Players can only be on one team at a time."
+- `400 Bad Request`: "Team roster is full. Max size: 25"
+- `404 Not Found`: "Player not found with id: 5"
+- `404 Not Found`: "Team not found with id: 1"
+
+---
+
+#### Remove Player from Team
+Removes a player from a team's roster. Cannot remove the team captain.
+
+**Endpoint**: `DELETE /api/teams/{teamId}/players/{playerId}`
+
+**Path Parameters**:
+- `teamId`: ID of the team
+- `playerId`: ID of the player to remove
+
+**Validations**:
+- ✅ Player must exist and be on the team
+- ✅ Cannot remove the team captain
+- ✅ Automatically updates roster count
+
+**Example Request**:
+```bash
+DELETE /api/teams/1/players/5
+```
+
+**Response** (200 OK):
+```json
+"Player removed from team successfully"
+```
+
+**Error Responses**:
+- `400 Bad Request`: "Player is not on this team"
+- `400 Bad Request`: "Cannot remove the team captain. Assign a new captain first."
+- `404 Not Found`: "Player not found with id: 5"
+- `404 Not Found`: "Team not found with id: 1"
+
+---
+
+## Mock Data
+
+The application comes pre-loaded with mock data for quick testing and development.
+
+### Users (Password: `password123` for all)
+
+| ID | Email | Role | Name |
+|----|-------|------|------|
+| 1 | john.striker@example.com | PLAYER | John Striker |
+| 2 | mike.keeper@example.com | PLAYER | Mike Keeper |
+| 3 | sarah.defender@example.com | PLAYER | Sarah Defender |
+| 4 | alex.mid@example.com | PLAYER | Alex Midfielder |
+| 5 | emma.forward@example.com | PLAYER | Emma Forward |
+| 6 | coach.jones@example.com | COACH | Tom Jones |
+| 7 | ref.smith@example.com | REFEREE | Jane Smith |
+| 8 | lily.goalie@example.com | PLAYER | Lily Guardian |
+| 9 | chris.back@example.com | PLAYER | Chris Backfield |
+| 10 | coach.williams@example.com | COACH | Lisa Williams |
+
+### Teams
+
+#### Thunder FC (Team ID: 1)
+- **Captain**: John Striker (#1)
+- **Roster**: 4 players
+  - John Striker (FORWARD) - Captain
+  - Mike Keeper (GOALKEEPER)
+  - Sarah Defender (DEFENDER)
+  - Alex Midfielder (MIDFIELDER)
+- **Coach**: Tom Jones (UEFA A License, 12 years)
+- **Stadium**: Thunder Stadium
+- **Colors**: Blue (Home), White (Away)
+- **Record**: 3W-1D-0L
+- **Max Roster Size**: 25
+
+#### Lightning United (Team ID: 2)
+- **Captain**: Emma Forward (#5)
+- **Roster**: 3 players
+  - Emma Forward (FORWARD) - Captain
+  - Lily Guardian (GOALKEEPER)
+  - Chris Backfield (DEFENDER)
+- **Coach**: Lisa Williams (UEFA B License, 8 years)
+- **Stadium**: Lightning Arena
+- **Colors**: Yellow (Home), Black (Away)
+- **Record**: 2W-2D-1L
+- **Max Roster Size**: 20
+
+### Referees
+- **Jane Smith** - FIFA Level 3, 10 years experience
+
+### Quick Test Examples
+
+```bash
+# Login with mock user
+POST /api/register/player
+{
+  "email": "john.striker@example.com",
+  "password": "password123"
+}
+
+# Get Thunder FC roster
+GET /api/teams/1/with-players
+
+# Get Lightning United roster
+GET /api/teams/2/with-players
+
+# Move a player between teams (first remove from current team)
+DELETE /api/teams/1/players/4
+POST /api/teams/2/players/4
 ```
 
 ---
@@ -346,12 +494,22 @@ public enum UserRole {
 - ✅ Each player can only be on **one team** at a time
 - ✅ Player must have a valid position (GOALKEEPER, DEFENDER, MIDFIELDER, FORWARD)
 - ✅ Player must be linked to a user account
+- ✅ Players can join and leave teams dynamically
 
 ### Teams
 - ✅ Every team must have exactly **one captain**
 - ✅ Captain must be a player (enforced by foreign key)
+- ✅ **Captain cannot be removed** from the team
 - ✅ Teams have configurable roster size limits
+- ✅ **Roster is validated** before adding players
+- ✅ Roster count automatically updates on add/remove
 - ✅ Teams track wins, draws, and losses
+
+### Roster Management
+- ✅ Centralized in **TeamService** for easy extension
+- ✅ **Transactional operations** ensure data consistency
+- ✅ Validates all business rules before modifying rosters
+- ✅ Ready for coach assignment extension
 
 ### Users
 - ✅ Email must be unique across all users
@@ -369,6 +527,7 @@ public enum UserRole {
 - **Password Encryption**: BCrypt algorithm for secure password hashing
 - **Validation**: Jakarta Validation annotations on all request DTOs
 - **Database Constraints**: Foreign keys and unique constraints enforced at DB level
+- **Transaction Management**: @Transactional ensures data consistency
 
 ---
 
@@ -399,6 +558,14 @@ http://localhost:8080/h2-console
 - Username: (check application.properties)
 - Password: (check application.properties)
 
+### Using Mock Data
+
+The application automatically loads mock data on startup from `data.sql`. You can:
+- Test with pre-existing teams and players
+- Use any mock user email with password `password123`
+- Immediately test roster management features
+- View complete team rosters with the `/with-players` endpoint
+
 ---
 
 ## Future Enhancements
@@ -406,10 +573,13 @@ http://localhost:8080/h2-console
 - [ ] Authentication & Authorization (JWT tokens)
 - [ ] Match scheduling and results
 - [ ] Player statistics tracking
-- [ ] Team invitations and roster management
+- [x] ~~Team roster management~~ ✅ **Implemented**
+- [ ] Team invitations system
 - [ ] Referee match assignments
 - [ ] League/tournament management
 - [ ] Real-time notifications
+- [ ] Captain transfer functionality
+- [ ] Coach team assignments (extend current roster system)
 
 ---
 
@@ -426,6 +596,8 @@ http://localhost:8080/h2-console
 ┌────────────────▼────────────────────────┐
 │           Service Layer                 │
 │   (Business Logic & Transactions)       │
+│   - Roster Management (TeamService)     │
+│   - Validations & Business Rules        │
 └────────────────┬────────────────────────┘
                  │
 ┌────────────────▼────────────────────────┐
@@ -451,6 +623,29 @@ User (Personal Info)
   │
   └── role: COACH ───────> Coach (teamId, certificationLevel, yearsExperience)
 ```
+
+### Roster Management Flow
+
+```
+TeamController.addPlayerToTeam()
+        │
+        ▼
+TeamService.addPlayerToTeam() [@Transactional]
+        │
+        ├──> Validate team exists
+        ├──> Validate player exists
+        ├──> Check player not on another team
+        ├──> Check roster not full
+        │
+        ├──> PlayerRepository.updatePlayerTeamId()
+        └──> TeamRepository.updateRosterSize()
+```
+
+**Why TeamService for Roster Management?**
+- Team owns the roster (centralized control)
+- Enforces team-level business rules
+- **Future-ready**: When coaches join teams, same service handles it
+- Transactional consistency across repositories
 
 ---
 
