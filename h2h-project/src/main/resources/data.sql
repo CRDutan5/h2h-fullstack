@@ -2,18 +2,18 @@
 -- This file is automatically loaded by Spring Boot on startup
 
 -- Insert Users (passwords are 'password123' encrypted with BCrypt)
--- BCrypt hash for 'password123': $2a$10$XQ3Zh7jxGxYPVp5kqjPEYuP.yH5LlPT5XQJJQ9lZ8KqB5R3fO/XKC
+-- BCrypt hash for 'password123': $2a$10$N9qo8uLOickgx2ZMRZoMye1J8IiLEV5KTBdmz8aJ7hQd8IeFLRGBe
 INSERT INTO users (email, password, first_name, last_name, zip_code, role, created_at, updated_at) VALUES
-('john.striker@example.com', '$2a$10$XQ3Zh7jxGxYPVp5kqjPEYuP.yH5LlPT5XQJJQ9lZ8KqB5R3fO/XKC', 'John', 'Striker', '12345', 'PLAYER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('mike.keeper@example.com', '$2a$10$XQ3Zh7jxGxYPVp5kqjPEYuP.yH5LlPT5XQJJQ9lZ8KqB5R3fO/XKC', 'Mike', 'Keeper', '12345', 'PLAYER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('sarah.defender@example.com', '$2a$10$XQ3Zh7jxGxYPVp5kqjPEYuP.yH5LlPT5XQJJQ9lZ8KqB5R3fO/XKC', 'Sarah', 'Defender', '12345', 'PLAYER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('alex.mid@example.com', '$2a$10$XQ3Zh7jxGxYPVp5kqjPEYuP.yH5LlPT5XQJJQ9lZ8KqB5R3fO/XKC', 'Alex', 'Midfielder', '12345', 'PLAYER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('emma.forward@example.com', '$2a$10$XQ3Zh7jxGxYPVp5kqjPEYuP.yH5LlPT5XQJJQ9lZ8KqB5R3fO/XKC', 'Emma', 'Forward', '67890', 'PLAYER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('coach.jones@example.com', '$2a$10$XQ3Zh7jxGxYPVp5kqjPEYuP.yH5LlPT5XQJJQ9lZ8KqB5R3fO/XKC', 'Tom', 'Jones', '12345', 'COACH', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('ref.smith@example.com', '$2a$10$XQ3Zh7jxGxYPVp5kqjPEYuP.yH5LlPT5XQJJQ9lZ8KqB5R3fO/XKC', 'Jane', 'Smith', '12345', 'REFEREE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('lily.goalie@example.com', '$2a$10$XQ3Zh7jxGxYPVp5kqjPEYuP.yH5LlPT5XQJJQ9lZ8KqB5R3fO/XKC', 'Lily', 'Guardian', '67890', 'PLAYER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('chris.back@example.com', '$2a$10$XQ3Zh7jxGxYPVp5kqjPEYuP.yH5LlPT5XQJJQ9lZ8KqB5R3fO/XKC', 'Chris', 'Backfield', '67890', 'PLAYER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-('coach.williams@example.com', '$2a$10$XQ3Zh7jxGxYPVp5kqjPEYuP.yH5LlPT5XQJJQ9lZ8KqB5R3fO/XKC', 'Lisa', 'Williams', '67890', 'COACH', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+('john.striker@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMye1J8IiLEV5KTBdmz8aJ7hQd8IeFLRGBe', 'John', 'Striker', '12345', 'PLAYER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('mike.keeper@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMye1J8IiLEV5KTBdmz8aJ7hQd8IeFLRGBe', 'Mike', 'Keeper', '12345', 'PLAYER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('sarah.defender@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMye1J8IiLEV5KTBdmz8aJ7hQd8IeFLRGBe', 'Sarah', 'Defender', '12345', 'PLAYER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('alex.mid@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMye1J8IiLEV5KTBdmz8aJ7hQd8IeFLRGBe', 'Alex', 'Midfielder', '12345', 'PLAYER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('emma.forward@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMye1J8IiLEV5KTBdmz8aJ7hQd8IeFLRGBe', 'Emma', 'Forward', '67890', 'PLAYER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('coach.jones@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMye1J8IiLEV5KTBdmz8aJ7hQd8IeFLRGBe', 'Tom', 'Jones', '12345', 'COACH', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('ref.smith@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMye1J8IiLEV5KTBdmz8aJ7hQd8IeFLRGBe', 'Jane', 'Smith', '12345', 'REFEREE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('lily.goalie@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMye1J8IiLEV5KTBdmz8aJ7hQd8IeFLRGBe', 'Lily', 'Guardian', '67890', 'PLAYER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('chris.back@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMye1J8IiLEV5KTBdmz8aJ7hQd8IeFLRGBe', 'Chris', 'Backfield', '67890', 'PLAYER', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('coach.williams@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMye1J8IiLEV5KTBdmz8aJ7hQd8IeFLRGBe', 'Lisa', 'Williams', '67890', 'COACH', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- Insert Players (without team assignments initially)
 INSERT INTO players (user_id, position, team_id) VALUES
