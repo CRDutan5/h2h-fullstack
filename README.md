@@ -4,7 +4,14 @@ A Spring Boot backend application for managing sports teams, players, coaches, a
 
 ## Features
 
-### 🔐 Role-Based User System
+### 🔐 Authentication & Security
+- **JWT-based authentication**: Secure token-based auth system
+- **Auto-login after registration**: Users receive JWT token immediately
+- **Password encryption**: BCrypt hashing for all passwords
+- **24-hour token expiration**: Configurable token lifetime
+- **Login/Logout endpoints**: Complete authentication flow
+
+### 👤 Role-Based User System
 - **Flexible user roles**: Player, Referee, Coach
 - **Clean separation**: Personal information (User) separate from role-specific data
 - **Extensible design**: Easy to add new roles in the future
@@ -46,7 +53,8 @@ A Spring Boot backend application for managing sports teams, players, coaches, a
 - **Database**: H2 (in-memory for development)
 - **Data Access**: JDBC Template (raw SQL)
 - **Validation**: Jakarta Validation + Hibernate Validator
-- **Security**: BCrypt password encryption
+- **Security**: BCrypt password encryption + JWT authentication
+- **JWT Library**: JJWT 0.12.3
 
 ## Database Schema
 
@@ -122,7 +130,62 @@ Role-specific data for coaches.
 
 ## API Endpoints
 
+### Authentication Endpoints
+
+#### Login
+Authenticates a user and returns a JWT token.
+
+**Endpoint**: `POST /api/auth/login`
+
+**Request Body**:
+```json
+{
+  "email": "john.striker@example.com",
+  "password": "password123"
+}
+```
+
+**Response** (200 OK):
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "tokenType": "Bearer",
+  "userId": 1,
+  "email": "john.striker@example.com",
+  "role": "PLAYER",
+  "firstName": "John",
+  "lastName": "Striker"
+}
+```
+
+**Error Responses**:
+- `401 Unauthorized`: "Invalid email or password"
+
+**Token Usage**:
+Include the token in subsequent requests using the Authorization header:
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+---
+
+#### Logout
+Logs out the current user (client-side token deletion).
+
+**Endpoint**: `POST /api/auth/logout`
+
+**Response** (200 OK):
+```json
+"Logged out successfully. Please delete the token on client side."
+```
+
+**Note**: Since JWT is stateless, logout is handled client-side by deleting the token. This endpoint exists for API consistency and future token blacklisting features.
+
+---
+
 ### Registration Endpoints
+
+**Note**: All registration endpoints automatically log in the user and return a JWT token.
 
 #### Register a Player
 Creates a new user with the PLAYER role and associated player record.
@@ -151,17 +214,20 @@ Creates a new user with the PLAYER role and associated player record.
 **Response** (201 Created):
 ```json
 {
-  "id": 1,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "tokenType": "Bearer",
   "userId": 1,
-  "teamId": null,
-  "position": "FORWARD"
+  "email": "player@example.com",
+  "role": "PLAYER",
+  "firstName": "John",
+  "lastName": "Doe"
 }
 ```
 
 ---
 
 #### Register a Referee
-Creates a new user with the REFEREE role and associated referee record.
+Creates a new user with the REFEREE role and associated referee record. **Automatically logs in the user**.
 
 **Endpoint**: `POST /api/register/referee`
 
@@ -181,17 +247,20 @@ Creates a new user with the REFEREE role and associated referee record.
 **Response** (201 Created):
 ```json
 {
-  "id": 1,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "tokenType": "Bearer",
   "userId": 2,
-  "certificationLevel": "Level 3",
-  "yearsExperience": 5
+  "email": "referee@example.com",
+  "role": "REFEREE",
+  "firstName": "Jane",
+  "lastName": "Smith"
 }
 ```
 
 ---
 
 #### Register a Coach
-Creates a new user with the COACH role and associated coach record.
+Creates a new user with the COACH role and associated coach record. **Automatically logs in the user**.
 
 **Endpoint**: `POST /api/register/coach`
 
@@ -212,11 +281,13 @@ Creates a new user with the COACH role and associated coach record.
 **Response** (201 Created):
 ```json
 {
-  "id": 1,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "tokenType": "Bearer",
   "userId": 3,
-  "teamId": 1,
-  "certificationLevel": "UEFA A",
-  "yearsExperience": 10
+  "email": "coach@example.com",
+  "role": "COACH",
+  "firstName": "Mike",
+  "lastName": "Johnson"
 }
 ```
 
