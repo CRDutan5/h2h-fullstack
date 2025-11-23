@@ -15,8 +15,8 @@ public class UserRepository {
     }
 
     public Long createUser(User user) {
-        String sql = "INSERT INTO users (email, password, first_name, last_name, zip_code, created_at, updated_at) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (email, password, first_name, last_name, zip_code, role, created_at, updated_at) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         var keyHolder = new GeneratedKeyHolder();
 
@@ -27,8 +27,9 @@ public class UserRepository {
             ps.setString(3, user.getFirstName());
             ps.setString(4, user.getLastName());
             ps.setString(5, user.getZipCode());
-            ps.setTimestamp(6, java.sql.Timestamp.valueOf(user.getCreatedAt()));
-            ps.setTimestamp(7, java.sql.Timestamp.valueOf(user.getUpdatedAt()));
+            ps.setString(6, user.getRole().name());
+            ps.setTimestamp(7, java.sql.Timestamp.valueOf(user.getCreatedAt()));
+            ps.setTimestamp(8, java.sql.Timestamp.valueOf(user.getUpdatedAt()));
             return ps;
         }, keyHolder);
 

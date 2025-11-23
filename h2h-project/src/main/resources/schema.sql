@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     zip_code VARCHAR(20) NOT NULL,
+    role VARCHAR(20) NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL
 );
@@ -41,6 +42,26 @@ CREATE TABLE IF NOT EXISTS players (
 );
 
 -- Now add the captain foreign key constraint to teams
-ALTER TABLE teams 
-ADD CONSTRAINT fk_captain 
+ALTER TABLE teams
+ADD CONSTRAINT fk_captain
 FOREIGN KEY (captain_id) REFERENCES players(id) ON DELETE RESTRICT;
+
+-- Create referees table
+CREATE TABLE IF NOT EXISTS referees (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    certification_level VARCHAR(50),
+    years_experience INT DEFAULT 0,
+    CONSTRAINT fk_referee_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Create coaches table
+CREATE TABLE IF NOT EXISTS coaches (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    team_id BIGINT,
+    certification_level VARCHAR(50),
+    years_experience INT DEFAULT 0,
+    CONSTRAINT fk_coach_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_coach_team FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE SET NULL
+);
