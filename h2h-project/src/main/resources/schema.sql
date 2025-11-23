@@ -1,5 +1,12 @@
+-- Drop existing tables in correct order (respecting foreign key constraints)
+DROP TABLE IF EXISTS coaches;
+DROP TABLE IF EXISTS referees;
+DROP TABLE IF EXISTS players;
+DROP TABLE IF EXISTS teams;
+DROP TABLE IF EXISTS users;
+
 -- Create users table first (no dependencies)
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
@@ -12,7 +19,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Create teams table WITHOUT the captain foreign key constraint
-CREATE TABLE IF NOT EXISTS teams (
+CREATE TABLE teams (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     captain_id BIGINT NOT NULL,
@@ -32,7 +39,7 @@ CREATE TABLE IF NOT EXISTS teams (
 );
 
 -- Create players table (now teams exists)
-CREATE TABLE IF NOT EXISTS players (
+CREATE TABLE players (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     team_id BIGINT,
     user_id BIGINT NOT NULL,
@@ -47,7 +54,7 @@ ADD CONSTRAINT fk_captain
 FOREIGN KEY (captain_id) REFERENCES players(id) ON DELETE RESTRICT;
 
 -- Create referees table
-CREATE TABLE IF NOT EXISTS referees (
+CREATE TABLE referees (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     certification_level VARCHAR(50),
@@ -56,7 +63,7 @@ CREATE TABLE IF NOT EXISTS referees (
 );
 
 -- Create coaches table
-CREATE TABLE IF NOT EXISTS coaches (
+CREATE TABLE coaches (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT NOT NULL,
     team_id BIGINT,

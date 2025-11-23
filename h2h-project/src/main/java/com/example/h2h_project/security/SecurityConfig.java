@@ -33,6 +33,7 @@ public class SecurityConfig {
                         // Public endpoints - no authentication required
                         .requestMatchers("/api/auth/login", "/api/auth/logout").permitAll()
                         .requestMatchers("/api/register/**").permitAll()
+                        .requestMatchers("/api/test/**").permitAll()  // Test endpoints for development
                         .requestMatchers("/h2-console/**").permitAll()  // H2 console for development
 
                         // All other endpoints require authentication
