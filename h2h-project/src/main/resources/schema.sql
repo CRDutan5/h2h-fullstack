@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS players (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     team_id BIGINT,
     user_id BIGINT NOT NULL,
-    position INT NOT NULL,
+    position VARCHAR(20) NOT NULL,
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT fk_team FOREIGN KEY (team_id) REFERENCES teams(id) ON DELETE SET NULL
 );

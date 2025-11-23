@@ -2,6 +2,7 @@ package com.example.h2h_project.repository;
 
 import com.example.h2h_project.dto.PlayerDTO;
 import com.example.h2h_project.model.Player;
+import com.example.h2h_project.model.Position;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
@@ -29,7 +30,7 @@ public class PlayerRepository {
             ps.setLong(1, player.getUserId());
 
             // Set position
-            ps.setInt(2, player.getPosition());
+            ps.setString(2, player.getPosition().name());
 
             // Set team_id (nullable)
             if (player.getTeamId() != null) {
@@ -56,7 +57,7 @@ public class PlayerRepository {
             PlayerDTO playerDTO = new PlayerDTO();
             playerDTO.setPlayerId(rs.getLong("player_id"));
             playerDTO.setUserId(rs.getLong("user_id"));
-            playerDTO.setPosition(rs.getInt("position"));
+            playerDTO.setPosition(Position.fromString(rs.getString("position")));
             playerDTO.setFirstName(rs.getString("first_name"));
             playerDTO.setLastName(rs.getString("last_name"));
             return playerDTO;

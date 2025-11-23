@@ -14,6 +14,6 @@ public class Player {
     private Long userId;
 
     @NotNull
-    private int position;
+    private Position position;
 
 }

@@ -1,10 +1,12 @@
 package com.example.h2h_project.requests;
 
 import com.example.h2h_project.model.Player;
+import com.example.h2h_project.model.Position;
 import com.example.h2h_project.model.User;
 import com.example.h2h_project.model.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -21,7 +23,8 @@ public class PlayerRegistrationRequest {
     private String lastName;
     private String zipCode;
 
-    private int position;
+    @NotNull
+    private Position position;
     private Long teamId;
 
     public User toUser() {
