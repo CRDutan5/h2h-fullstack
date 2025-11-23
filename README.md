@@ -183,6 +183,54 @@ Logs out the current user (client-side token deletion).
 
 ---
 
+### 🔒 Endpoint Protection
+
+**Public Endpoints** (No authentication required):
+- `POST /api/auth/login` - Login
+- `POST /api/auth/logout` - Logout
+- `POST /api/register/player` - Register player
+- `POST /api/register/referee` - Register referee
+- `POST /api/register/coach` - Register coach
+- `/h2-console/**` - H2 Database Console (development only)
+
+**Protected Endpoints** (JWT token required):
+- All team endpoints (`/api/teams/**`)
+- All roster management endpoints
+
+**How to Access Protected Endpoints:**
+1. Login or register to get a JWT token
+2. Include the token in the `Authorization` header:
+   ```
+   Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+   ```
+3. Make your request
+
+**Example:**
+```bash
+# Login to get token
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"john.striker@example.com","password":"password123"}'
+
+# Use token to access protected endpoint
+curl -X GET http://localhost:8080/api/teams/1/with-players \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+```
+
+**Error Response (401 Unauthorized):**
+If you try to access a protected endpoint without a valid token, you'll receive:
+```json
+{
+  "timestamp": "2025-01-23T10:00:00.000+00:00",
+  "status": 401,
+  "error": "Unauthorized",
+  "message": "Full authentication is required to access this resource",
+  "path": "/api/teams/1"
+}
+```
+
+---
+
 ### Registration Endpoints
 
 **Note**: All registration endpoints automatically log in the user and return a JWT token.
@@ -595,10 +643,17 @@ public enum UserRole {
 
 ## Security
 
+- **JWT Authentication**: Stateless token-based authentication with HMAC SHA-256 signing
+- **JWT Filter**: Custom authentication filter validates tokens on every request
+- **Endpoint Protection**: All team and roster management endpoints require authentication
 - **Password Encryption**: BCrypt algorithm for secure password hashing
+- **Stateless Sessions**: No server-side sessions (SessionCreationPolicy.STATELESS)
+- **Token Expiration**: 24-hour JWT token lifetime
 - **Validation**: Jakarta Validation annotations on all request DTOs
 - **Database Constraints**: Foreign keys and unique constraints enforced at DB level
 - **Transaction Management**: @Transactional ensures data consistency
+- **CSRF Protection**: Disabled (stateless JWT authentication)
+- **Public Endpoints**: Login and registration accessible without authentication
 
 ---
 
