@@ -30,5 +30,16 @@ public class TeamController {
         return ResponseEntity.status(200).body(roster);
     }
 
+    @PostMapping("/{teamId}/players/{playerId}")
+    public ResponseEntity<String> addPlayerToTeam(@PathVariable Long teamId, @PathVariable Long playerId) {
+        teamService.addPlayerToTeam(playerId, teamId);
+        return ResponseEntity.status(200).body("Player added to team successfully");
+    }
+
+    @DeleteMapping("/{teamId}/players/{playerId}")
+    public ResponseEntity<String> removePlayerFromTeam(@PathVariable Long teamId, @PathVariable Long playerId) {
+        teamService.removePlayerFromTeam(playerId, teamId);
+        return ResponseEntity.status(200).body("Player removed from team successfully");
+    }
 
 }

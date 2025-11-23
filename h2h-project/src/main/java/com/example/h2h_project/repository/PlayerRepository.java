@@ -70,6 +70,22 @@ public class PlayerRepository {
         return rowsAffected > 0;
     }
 
+    public int countPlayersByTeamId(Long teamId) {
+        String sql = "SELECT COUNT(*) FROM players WHERE team_id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, teamId);
+        return count != null ? count : 0;
+    }
 
+    public Player getPlayerById(Long playerId) {
+        String sql = "SELECT * FROM players WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{playerId}, (rs, rowNum) -> {
+            Player player = new Player();
+            player.setId(rs.getLong("id"));
+            player.setUserId(rs.getLong("user_id"));
+            player.setTeamId(rs.getObject("team_id", Long.class));
+            player.setPosition(Position.fromString(rs.getString("position")));
+            return player;
+        });
+    }
 
 }

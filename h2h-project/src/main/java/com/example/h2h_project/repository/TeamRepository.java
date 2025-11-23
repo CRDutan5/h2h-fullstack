@@ -69,5 +69,11 @@ public class TeamRepository {
         });
 
     }
+
+    public boolean updateRosterSize(Long teamId, int newSize) {
+        String sql = "UPDATE teams SET current_roster_size = ?, updated_at = ? WHERE id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, newSize, Timestamp.valueOf(java.time.LocalDateTime.now()), teamId);
+        return rowsAffected > 0;
+    }
 }
 
