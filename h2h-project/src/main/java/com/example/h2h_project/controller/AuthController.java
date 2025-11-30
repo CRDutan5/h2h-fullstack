@@ -2,9 +2,12 @@ package com.example.h2h_project.controller;
 
 import com.example.h2h_project.dto.LoginRequest;
 import com.example.h2h_project.dto.LoginResponse;
+import com.example.h2h_project.dto.RegisterRequest;
+import com.example.h2h_project.dto.RegisterResponse;
 import com.example.h2h_project.model.User;
 import com.example.h2h_project.repository.UserRepository;
 import com.example.h2h_project.security.JwtUtil;
+import com.example.h2h_project.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,15 +29,52 @@ public class AuthController {
     private final UserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     public AuthController(AuthenticationManager authenticationManager,
                           UserDetailsService userDetailsService,
                           JwtUtil jwtUtil,
-                          UserRepository userRepository) {
+                          UserRepository userRepository,
+                          UserService userService) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
+        this.userService = userService;
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
+        try {
+            // Create user object
+            User user = new User();
+            user.setEmail(registerRequest.getEmail());
+            user.setPassword(registerRequest.getPassword());
+            user.setFirstName(registerRequest.getFirstName());
+            user.setLastName(registerRequest.getLastName());
+            user.setZipCode(registerRequest.getZipCode());
+
+            // Register the user
+            User createdUser = userService.registerNewUser(user);
+
+            // Return response
+            RegisterResponse response = new RegisterResponse(
+                    createdUser.getId(),
+                    createdUser.getEmail(),
+                    createdUser.getFirstName(),
+                    createdUser.getLastName(),
+                    "User registered successfully"
+            );
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred during registration");
+        }
     }
 
     @PostMapping("/login")
