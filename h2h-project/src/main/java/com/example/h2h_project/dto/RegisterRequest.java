@@ -21,7 +21,4 @@ public class RegisterRequest {
 
     @NotBlank(message = "Last name is required")
     private String lastName;
-
-    @NotBlank(message = "Zip code is required")
-    private String zipCode;
 }

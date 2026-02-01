@@ -24,9 +24,6 @@ public class User {
     @NotNull
     private String lastName;
 
-    @NotNull
-    private String zipCode;
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -38,12 +35,11 @@ public class User {
     }
 
     // Convenience constructor
-    public User(String email, String password, String firstName, String lastName, String zipCode) {
+    public User(String email, String password, String firstName, String lastName) {
         this();
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.zipCode = zipCode;
     }
 }

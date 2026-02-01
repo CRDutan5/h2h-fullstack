@@ -52,7 +52,6 @@ public class AuthController {
             user.setPassword(registerRequest.getPassword());
             user.setFirstName(registerRequest.getFirstName());
             user.setLastName(registerRequest.getLastName());
-            user.setZipCode(registerRequest.getZipCode());
 
             // Register the user
             User createdUser = userService.registerNewUser(user);

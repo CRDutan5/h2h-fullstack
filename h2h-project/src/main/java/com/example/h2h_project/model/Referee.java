@@ -5,11 +5,10 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class Player {
+public class Referee {
     private Long id;
     private Long userId;
-    private String position;
-    private String skillLevel;
+    private String certificationLevel;
     private Integer yearsExperience;
     private String bio;
     private LocalDateTime createdAt;
